@@ -107,10 +107,18 @@ public class OpenAiVectorStoreTests {
 
     @Test
     public void testSimilaritySearch() {
-        String question = "김첨지 아내는 무슨 병에 걸렸나요?";
+        // RAG로 일부 정보만 획득해도 답변 생성이 용이한 질문
+        String question = "주인공 김첨지는 어떤 일을 하는 사람인가요?";
+//        String question = "김첨지 아내는 무슨 병에 걸렸나요?";
+//        String question = "김첨지가 '오늘은 운수 좋은 날'이라고 생각한 이유는 무엇인가요?";
+//        String question = "김첨지는 왜 비 오는 날에 나가 일하게 되었나요?";
+        // RAG로 일부 정보만 획득하여 답변 생성이 어려운 질문
+//        String question = "아내의 상태는 이야기 초반과 끝부분에서 어떻게 달라지나요?";
+//        String question = "이야기의 결말은 어떻게 되었나요?";
+
         //String question = "인공지능을 사용하면 일반 사람들도 예술가가 될 수 있을까?";
 
-        // Simple format
+        // Simple format (default topK 4)
         //List<Document> documents = vectorStore.similaritySearch(question);
 
         List<Document> documents = vectorStore.similaritySearch(SearchRequest.builder()
@@ -131,8 +139,8 @@ public class OpenAiVectorStoreTests {
                 """, information, question);
 
         Message message = new UserMessage(prompt);
-        String result = chatModel.call(message);
+        String completion = chatModel.call(message);
 
-        log.info("{}", result);
+        log.info("{}", completion);
     }
 }
