@@ -50,6 +50,8 @@ public class OpenAiModerationModelTests {
     //    text-moderation-stable
     //    text-moderation-latest
     //    Access to these models in the API will end on October 27, 2025.
+    //    Spring AI 1.0.3에서의 디폴트 모델이 text-moderation-latest으로 2025-10-27 이후에는 옵션으로 모델을 omni-moderation-latest로 지정해야 함
+    //    OpenAiModerationOptions.builder().model("omni-moderation-latest").build()
     @Test
     public void testOpenAiModerationModelOptions() {
         ModerationPrompt moderationPrompt = new ModerationPrompt(message);

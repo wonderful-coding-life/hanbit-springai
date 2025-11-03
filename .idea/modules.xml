@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/openai-chat-model.main.iml" filepath="$PROJECT_DIR$/.idea/modules/openai-chat-model.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/openai-webflux.main.iml" filepath="$PROJECT_DIR$/.idea/modules/openai-webflux.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/springai.iml" filepath="$PROJECT_DIR$/springai.iml" />
     </modules>
   </component>

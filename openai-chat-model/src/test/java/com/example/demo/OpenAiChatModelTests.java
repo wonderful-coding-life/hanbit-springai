@@ -54,42 +54,57 @@ public class OpenAiChatModelTests {
         Message message2 = new UserMessage("그럼 바로 그 이전 올림픽은 어디야?");
         Message assistant2 = new AssistantMessage("바로 이전 올림픽은 1984년 하계 올림픽으로, 미국 로스앤젤레스에서 개최되었습니다. 이 대회는 7월 28일부터 8월 12일까지 진행되었고, 많은 국가가 참여한 강행된 올림픽 중 하나였습니다.");
         Message message3 = new UserMessage("그럼 그 두개의 올림픽중 참여 국가는 어디가 많아?");
+
+//        List<Message> messages = List.of(
+//                new SystemMessage("간략하게 답변해 주세요."),
+//                new UserMessage("서울 올림픽에 대해 알려 주세요"),
+//                new AssistantMessage("서울 올림픽, 공식명칭은 제24회 하계 올림픽대회는 1988년 9월 17일부터 10월 2일까지 대한민국 서울에서 개최되었습니다. 이 대회는 한국에서 처음으로 열린 올림픽 경기로, 총 159개 국가가 참여하였고 23종목의 경기가 진행되었습니다. 서울 올림픽은 성공적인 개최로 평가받았으며, 그로 인해 한국은 국제 스포츠 무대에서의 위상이 크게 향상되었습니다. 또한, 대회 기간 동안 평화와 화합을 강조하며 많은 이들에게 기억에 남는 현장이 되었습니다."),
+//                new UserMessage("그럼 바로 그 이전 올림픽은 어디야?"),
+//                new AssistantMessage("바로 이전 올림픽은 1984년 하계 올림픽으로, 미국 로스앤젤레스에서 개최되었습니다. 이 대회는 7월 28일부터 8월 12일까지 진행되었고, 많은 국가가 참여한 강행된 올림픽 중 하나였습니다."),
+//                new UserMessage("그럼 그 두개의 올림픽중 참여 국가는 어디가 많아?")
+//        );
+
         String result = chatModel.call(system, message1, assistant1, message2, assistant2, message3);
         log.info("result {}", result);
+
     }
 
+    // temperature(온도) : 창의성과 다양성(무작위성)을 조절
+    //   → 전반적인 무작위성의 강도를 조절
+    //   → 얼마나 과감하게 랜덤하게 뽑을지를 결정
+    //   → 0.0 ~ 2.0 (기본 1.0 - 스프링 AI에서는 조금 낮게 설정)
+    // top_p(누적 확률 임계값) : "확률이 높은 단어들 중 상위 몇 %만 고려할까?"
+    //   → top-p는 모델이 예측한 다음 단어 확률 분포에서 누적 확률이 p 이하가 되는 상위 단어들만 선택해 사용하는 방법
+    //   → 선택 범위의 폭을 조절
+    //   → 낮은 확률 단어까지 포함할지, 상위 확률 단어만 쓸지를 결정
+    //   → 0.0 ~ 1.0 (기본 1.0 - 모든 단어를 사용 범위에 포함)
+    // 일반적으로 temperature와 top_p는 동시에 크게 조정하지 않고, 하나를 바꿀 때 다른 하나는 기본값(1.0)을 설정
+    // GPT-5는 temperatur, topP 모두 디폴트 값 1.0, 1.0만 지원
     @Test
     public void testChatGptPrompt() {
-        List<Message> messages = List.of(
-                new SystemMessage("간략하게 답변해 주세요."),
-                new UserMessage("서울 올림픽에 대해 알려 주세요"),
-                new AssistantMessage("서울 올림픽, 공식명칭은 제24회 하계 올림픽대회는 1988년 9월 17일부터 10월 2일까지 대한민국 서울에서 개최되었습니다. 이 대회는 한국에서 처음으로 열린 올림픽 경기로, 총 159개 국가가 참여하였고 23종목의 경기가 진행되었습니다. 서울 올림픽은 성공적인 개최로 평가받았으며, 그로 인해 한국은 국제 스포츠 무대에서의 위상이 크게 향상되었습니다. 또한, 대회 기간 동안 평화와 화합을 강조하며 많은 이들에게 기억에 남는 현장이 되었습니다."),
-                new UserMessage("그럼 바로 그 이전 올림픽은 어디야?"),
-                new AssistantMessage("바로 이전 올림픽은 1984년 하계 올림픽으로, 미국 로스앤젤레스에서 개최되었습니다. 이 대회는 7월 28일부터 8월 12일까지 진행되었고, 많은 국가가 참여한 강행된 올림픽 중 하나였습니다."),
-                new UserMessage("그럼 그 두개의 올림픽중 참여 국가는 어디가 많아?")
-        );
-
+        // String message = "비 오는 날의 기분을 시인처럼 표현해줘.";
+        String message = "무지개의 색을 새로운 방식으로 설명해줘.";
         var chatOptions = OpenAiChatOptions.builder()
-                .model(OpenAiApi.ChatModel.GPT_4_O)
-                .N(2)
+                .model(OpenAiApi.ChatModel.GPT_4_O_MINI)
+                .N(1)
+                .topP(1.0)
                 .temperature(1.0).build();
 
-        var prompt = new Prompt(messages, chatOptions);
-
+        var prompt = new Prompt(message, chatOptions);
         var chatResponse = chatModel.call(prompt);
+
+        for (Generation generation : chatResponse.getResults()) {
+            log.info("response {}", generation.getOutput().getText());
+        }
 
         Usage usage = chatResponse.getMetadata().getUsage();
         log.info("promptTokens {}, completionTokens {}, totalTokens {}",
                 usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens());
-
         RateLimit rateLimit = chatResponse.getMetadata().getRateLimit();
         log.info("requestLimit {}, requestRemaining {}, requestReset {}",
                 rateLimit.getRequestsLimit(), rateLimit.getRequestsRemaining(), rateLimit.getRequestsReset());
         log.info("tokensLimit {}, tokensRemaining {}, tokensReset {}",
                 rateLimit.getTokensLimit(), rateLimit.getTokensRemaining(), rateLimit.getTokensReset());
-        for (Generation generation : chatResponse.getResults()) {
-            log.info("response {}", generation.getOutput().getText());
-        }
     }
 
     @Test
