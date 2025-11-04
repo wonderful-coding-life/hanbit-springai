@@ -144,7 +144,7 @@ public class OpenAiChatModelTests {
         // 기본 GPT 모델은 오디오를 입력으로 받지 못 하므로 오디오 입력이 가능한 챗모델을 지정
         ChatOptions chatOptions = OpenAiChatOptions.builder()
                 //.model(OpenAiApi.ChatModel.GPT_4_O_AUDIO_PREVIEW)
-                .model("gpt-audio")
+                .model("gpt-audio-mini")
                 .build();
 
         // 챗옵션과 사용자 메시지를 사용하여 프롬프트 구성하고 호출
@@ -162,7 +162,7 @@ public class OpenAiChatModelTests {
 
         ChatOptions chatOptions = OpenAiChatOptions.builder()
                 .model(OpenAiApi.ChatModel.GPT_4_O_AUDIO_PREVIEW)
-                //.model("gpt-audio")
+                //.model("gpt-audio-mini")
                 .outputModalities(List.of("text", "audio"))
                 .outputAudio(new OpenAiApi.ChatCompletionRequest.AudioParameters(
                         OpenAiApi.ChatCompletionRequest.AudioParameters.Voice.NOVA,
@@ -185,13 +185,15 @@ public class OpenAiChatModelTests {
 
     @Test
     public void testMultiModalWithAudioInputOutput() throws IOException {
-        var audioResource = new ClassPathResource("/audio/sample_audio_ask.mp3");
+        //var audioResource = new ClassPathResource("/audio/sample_audio_ask.mp3");
+        var audioResource = new ClassPathResource("/audio/mandarin-duck.mp3");
         var media = Media.builder()
                 .mimeType(MimeTypeUtils.parseMimeType("audio/mp3"))
                 .data(audioResource)
                 .build();
         var userMessage =UserMessage.builder()
-                .text("질문에 친절하고 간략하게 답변해 주세요")
+                //.text("질문에 친절하고 간략하게 답변해 주세요")
+                .text("무슨 동물의 울음소리야?")
                 .media(media)
                 .build();
 
@@ -209,6 +211,7 @@ public class OpenAiChatModelTests {
         System.out.println("result = " + text);
 
         byte[] audio = response.getResult().getOutput().getMedia().getFirst().getDataAsByteArray(); // audio data
-        Files.write(Paths.get("D:\\archive\\audio\\ai_chat_audio_answer.mp3"), audio);
+        //Files.write(Paths.get("D:\\archive\\audio\\ai_chat_audio_answer.mp3"), audio);
+        Files.write(Paths.get("D:\\archive\\audio\\ai_mandarin_duck_answer.mp3"), audio);
     }
 }
