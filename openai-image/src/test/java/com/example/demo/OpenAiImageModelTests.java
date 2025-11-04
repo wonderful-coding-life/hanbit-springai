@@ -45,7 +45,7 @@ public class OpenAiImageModelTests {
             """;
 
         OpenAiImageOptions openAiImageOptions = OpenAiImageOptions.builder()
-                .model("dall-e-3") // dall-e-3, gpt-image-1-mini (protected)
+                .model("dall-e-3") // dall-e-3, gpt-image-1-mini (protected - image input)
                 .style("vivid") // vivid (default), natural
                 .quality("hd") // standard (default), hd
                 .responseFormat("b64_json") // url (default), b64_json

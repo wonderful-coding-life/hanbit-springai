@@ -131,14 +131,14 @@ public class OpenAiChatModelTests {
     @Test
     public void testMultiModalWithAudioInput() {
         // 오디오 미디어 준비
-        Resource resource = new ClassPathResource("/audio/sample_audio.mp3");
+        Resource resource = new ClassPathResource("/audio/sample_audio_springai.mp3");
         Media media = Media.builder()
                 .mimeType(MimeTypeUtils.parseMimeType("audio/mp3"))
                 .data(resource).build();
 
         // 준비한 미디어와 텍스트로 사용자 메시지 준비
         UserMessage message = UserMessage.builder()
-                .text("이 오디오 파일의 내용을 요약해 주세요")
+                .text("이 오디오 파일의 내용을 영어로 요약해 주세요")
                 .media(media).build();
 
         // 기본 GPT 모델은 오디오를 입력으로 받지 못 하므로 오디오 입력이 가능한 챗모델을 지정
@@ -186,32 +186,38 @@ public class OpenAiChatModelTests {
     @Test
     public void testMultiModalWithAudioInputOutput() throws IOException {
         //var audioResource = new ClassPathResource("/audio/sample_audio_ask.mp3");
-        var audioResource = new ClassPathResource("/audio/mandarin-duck.mp3");
+        //var audioResource = new ClassPathResource("/audio/mandarin_duck.mp3");
+        var audioResource = new ClassPathResource("/audio/cnn_news.mp3");
         var media = Media.builder()
                 .mimeType(MimeTypeUtils.parseMimeType("audio/mp3"))
                 .data(audioResource)
                 .build();
         var userMessage =UserMessage.builder()
                 //.text("질문에 친절하고 간략하게 답변해 주세요")
-                .text("무슨 동물의 울음소리야?")
+                //.text("무슨 동물의 울음소리야?")
+                .text("일본어로 번역 해 줘")
                 .media(media)
                 .build();
-
         ChatResponse response = chatModel.call(new Prompt(userMessage,
                 OpenAiChatOptions.builder()
                         .temperature(0.5)
-                        .model(OpenAiApi.ChatModel.GPT_4_O_AUDIO_PREVIEW)
+                        //.model(OpenAiApi.ChatModel.GPT_4_O_AUDIO_PREVIEW)
+                        .model("gpt-audio-mini")
                         .outputModalities(List.of("text", "audio"))
                         .outputAudio(new OpenAiApi.ChatCompletionRequest.AudioParameters(
                                 OpenAiApi.ChatCompletionRequest.AudioParameters.Voice.NOVA,
                                 OpenAiApi.ChatCompletionRequest.AudioParameters.AudioResponseFormat.MP3)
                         ).build()));
 
-        String text = response.getResult().getOutput().getText(); // audio transcript
-        System.out.println("result = " + text);
+        var metadata = response.getMetadata();
+        log.info("model {}", metadata.getModel());
+        log.info("prompt tokens {}, completion tokens {}", metadata.getUsage().getPromptTokens(), metadata.getUsage().getCompletionTokens());
+
+        String completion = response.getResult().getOutput().getText(); // audio transcript
+        log.info("{}", completion);
 
         byte[] audio = response.getResult().getOutput().getMedia().getFirst().getDataAsByteArray(); // audio data
         //Files.write(Paths.get("D:\\archive\\audio\\ai_chat_audio_answer.mp3"), audio);
-        Files.write(Paths.get("D:\\archive\\audio\\ai_mandarin_duck_answer.mp3"), audio);
+        Files.write(Paths.get("D:\\archive\\audio\\ai_" + audioResource.getFilename() + "_" + metadata.getModel() + ".mp3"), audio);
     }
 }
