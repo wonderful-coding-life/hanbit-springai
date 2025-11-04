@@ -93,6 +93,7 @@ public class OpenAiChatModelTests {
         var prompt = new Prompt(message, chatOptions);
         var chatResponse = chatModel.call(prompt);
 
+        log.info("model {}", chatResponse.getMetadata().getModel());
         for (Generation generation : chatResponse.getResults()) {
             log.info("response {}", generation.getOutput().getText());
         }

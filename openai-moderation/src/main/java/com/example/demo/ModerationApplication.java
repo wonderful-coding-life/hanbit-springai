@@ -1,17 +1,17 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.moderation.*;
 import org.springframework.ai.openai.OpenAiModerationModel;
+import org.springframework.ai.openai.OpenAiModerationOptions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
-@SpringBootTest
-public class OpenAiModerationModelTests {
-    private static final Logger log = LoggerFactory.getLogger(OpenAiModerationModelTests.class);
-
+@Component
+@Slf4j
+public class ModerationApplication implements ApplicationRunner {
     @Autowired
     private OpenAiModerationModel openAiModerationModel;
 
@@ -52,10 +52,12 @@ public class OpenAiModerationModelTests {
     //    Access to these models in the API will end on October 27, 2025.
     //    Spring AI 1.0.3에서의 디폴트 모델이 text-moderation-latest으로 2025-10-27 이후에는 옵션으로 모델을 omni-moderation-latest로 지정해야 함
     //    OpenAiModerationOptions.builder().model("omni-moderation-latest").build()
-    @Test
-    public void testOpenAiModerationModelOptions() {
-        ModerationPrompt moderationPrompt = new ModerationPrompt(message);
-        ModerationResponse response = openAiModerationModel.call(moderationPrompt);
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        OpenAiModerationOptions options = OpenAiModerationOptions.builder().model("omni-moderation-latest").build();
+        ModerationPrompt prompt = new ModerationPrompt(message, options);
+        ModerationResponse response = openAiModerationModel.call(prompt);
 
         Moderation moderation = response.getResult().getOutput();
 
