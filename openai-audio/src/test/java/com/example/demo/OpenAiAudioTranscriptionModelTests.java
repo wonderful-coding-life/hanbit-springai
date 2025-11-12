@@ -24,10 +24,8 @@ public class OpenAiAudioTranscriptionModelTests {
     @Test
     public void testTranscriptModelSimple() {
         Resource resource = new ClassPathResource("/audio/voc_kart_rider.mp3");
-        //Resource resource = new ClassPathResource("/audio/sample_audio.mp3");
-        //Resource resource = new ClassPathResource("/image/Disney_World_2.jpg");
-        //Resource resource = new FileSystemResource("D:\\archive\\audio\\sample_audio.mpg");
-        //Resource resource = new UrlResource("https://xxx/sample_audio.mpg");
+        //Resource resource = new FileSystemResource("D:\\archive\\audio\\voc_kart_rider.mpg");
+        //Resource resource = new UrlResource("https://xxx/sample_audio.mp3");
         String script = transcriptionModel.call(resource);
         log.info("script {}", script);
     }
