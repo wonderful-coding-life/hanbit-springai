@@ -35,7 +35,7 @@ public class OpenAiAudioSpeechModelTests {
                 .model("tts-1") // tts-1, tts-1-hd, gpt-4o-mini-tts (not ready yet for spring ai)
                 .voice(OpenAiAudioApi.SpeechRequest.Voice.NOVA) // default ALLOY?
                 .responseFormat(OpenAiAudioApi.SpeechRequest.AudioResponseFormat.MP3)
-                .speed(1.0f)
+                .speed(1.0f) // fast > 1.0
                 .build();
 
         String text = "안녕하세요 반갑습니다. 스프링부트는 자바 프레임워크 중에 가장 인기가 많은 프레임워크입니다.";
