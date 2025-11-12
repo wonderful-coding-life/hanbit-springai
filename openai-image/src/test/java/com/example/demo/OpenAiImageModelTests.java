@@ -24,35 +24,47 @@ public class OpenAiImageModelTests {
     @Autowired
     private OpenAiImageModel imageModel;
 
-    @Test
-    public void testImageModelSimple() {
-        String message = """
-            수채화 스타일로 그린 화성 탐사 로버 그림이 필요해.
-            2족 보행 로봇이 함께 탐사하는 모습으로 해 줘.
-            붓으로 그린 듯한 부드러운 필치와 여백의 미를 살려서 표현해 줘.
+    // 리얼리즘 사진 스타일
+    String message1 = """
+            화성 표면에서 자동차 크기의 탐사 로버가 움직이고 있으며, 그 옆에는 2족 보행 로봇이 함께 탐사 활동을 하고 있다.
+            붉은 모래 언덕과 먼지 낀 하늘이 배경이며, 태양빛이 낮게 비추는 오후의 분위기.
+            실제 사진처럼 보이는 고해상도 장면, 자연스러운 그림자와 질감.
             """;
 
-        ImageResponse response = imageModel.call(new ImagePrompt(message));
+    // 시네마틱 영화 장면 스타일
+    String message2 = """
+            화성 표면에서 자동차 크기의 탐사 로버가 움직이고 있으며, 그 옆에는 2족 보행 로봇이 함께 탐사 활동을 하고 있다.
+            붉은 모래 언덕과 먼지 낀 하늘이 배경이며, 태양빛이 낮게 비추는 오후의 분위기.
+            영화 포스터처럼 웅장하고 드라마틱한 구도.
+            """;
+
+    // 과학 다큐멘터리 스타일
+    String message3 = """
+            화성 탐사 현장을 다큐멘터리 사진처럼 표현.
+            실제 NASA 탐사 사진처럼 로버의 금속 질감과 먼지 낀 렌즈 표현이 사실적이다.
+            2족 보행 로봇이 로버 옆에서 탐사를 돕는 장면.
+            """;
+
+    @Test
+    public void testImageModelSimple() {
+        ImageResponse response = imageModel.call(new ImagePrompt(message1));
         log.info("URL {}", response.getResult().getOutput().getUrl());
     }
 
+    // style 옵션은 "기본적인 톤의 방향"을 정하는 스위치, 프롬프트는 "세부 묘사나 분위기"를 조정 (photo realistic, cinematic lighting)
+    // vivid - 색감과 조명, 디테일이 더 강하고 "화려한" 결과 — 포스터, 일러스트, SF 분위기
+    // natural - 현실 사진처럼 자연스러운 색감과 질감 — 다큐멘터리, 제품 사진, 실사풍
     @Test
     public void testImageModel() throws IOException {
-        String message = """
-            수채화 스타일로 그린 화성 탐사 로버 그림이 필요해.
-            2족 보행 로봇이 함께 탐사하는 모습으로 해 줘.
-            붓으로 그린 듯한 부드러운 필치와 여백의 미를 살려서 표현해 줘.
-            """;
-
         OpenAiImageOptions openAiImageOptions = OpenAiImageOptions.builder()
                 .model("dall-e-3") // dall-e-3, gpt-image-1-mini (protected - image input)
-                .style("vivid") // vivid (default), natural
+                .style("natural") // vivid (default), natural
                 .quality("hd") // standard (default), hd
-                .responseFormat("b64_json") // url (default), b64_json
+                .responseFormat("url") // url (default), b64_json
                 .width(1024)
                 .height(1024).build();
 
-        ImagePrompt imagePrompt = new ImagePrompt(message, openAiImageOptions);
+        ImagePrompt imagePrompt = new ImagePrompt(message1, openAiImageOptions);
         ImageResponse imageResponse = imageModel.call(imagePrompt);
 
         if (imageResponse.getResult().getOutput().getB64Json() != null) {
