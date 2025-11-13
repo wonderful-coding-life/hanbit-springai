@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.model.ActorMovies;
+import com.example.demo.model.Actor;
 import com.example.demo.model.Movie;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.converter.BeanOutputConverter;
@@ -20,7 +20,7 @@ public class StructuredOutputConverterTests {
 
     @Test
     public void testClassLiteral() {
-        Class<ActorMovies> clazz = ActorMovies.class;
+        Class<Actor> clazz = Actor.class;
         System.out.println("class name = " + clazz.getName());
         System.out.println("class package name = " + clazz.getPackageName());
         Field[] fields = clazz.getDeclaredFields();
@@ -34,7 +34,7 @@ public class StructuredOutputConverterTests {
     @Test
     public void testConverter() {
         // Converter는 LLM의 응답을 자바 객체로 만들어 준다
-        BeanOutputConverter<ActorMovies> beanOutputConverter = new BeanOutputConverter<>(ActorMovies.class);
+        BeanOutputConverter<Actor> beanOutputConverter = new BeanOutputConverter<>(Actor.class);
         // 프롬프트에 넣을 힌트
         System.out.println("converter format=" + beanOutputConverter.getFormat());
         // LLM이 생성한 결과를 검증할 JSON 스키마 표준 (convert 호출시 LLM 출력을 검증한 후에 객체로 생성한다)
@@ -52,7 +52,7 @@ public class StructuredOutputConverterTests {
         String result = openAiChatModel.call(message);
         System.out.println("result = " + result);
 
-        ActorMovies actorMovies = beanOutputConverter.convert(result);
+        Actor actorMovies = beanOutputConverter.convert(result);
         assertThat(actorMovies).isNotNull();
         System.out.println("배우: " + actorMovies.getActor());
         for (Movie movie : actorMovies.getMovies()) {

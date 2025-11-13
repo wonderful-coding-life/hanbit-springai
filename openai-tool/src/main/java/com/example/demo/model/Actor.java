@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActorMovies {
+public class Actor {
     private String actor;
     private List<Movie> movies;
 }
