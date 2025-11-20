@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.tool.ProductOrderTool;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -43,5 +44,19 @@ public class ChatController {
         Prompt prompt = new Prompt(messages, chatOptions);
         ChatResponse response = chatModel.call(prompt);
         return response.getResult().getOutput().getText();
+    }
+
+    // ChatClient --> ChatClientResponse
+    private final ChatClient chatClient;
+
+    @RequestMapping("/chat/client")
+    public String getChatClient(@RequestParam("message") String userMessage) {
+        return chatClient
+                .prompt()
+                    .system(systemMessage)
+                    .user(userMessage)
+                    .tools(productOrderTool)
+                .call()
+                    .content();
     }
 }
