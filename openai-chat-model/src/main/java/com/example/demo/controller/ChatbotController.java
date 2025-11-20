@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
@@ -53,5 +54,38 @@ public class ChatbotController {
         messages.forEach(msg -> log.info("{}", msg.getText()));
 
         return assistantMessage.getText();
+    }
+
+    // ChatClient 방식도 최근에는 ChatMemory를 별도로 운영 관리하도록 변경
+    // 예전에는 .memoryId() 메서드로 통합해서 운영했었음.
+    @Autowired
+    private ChatClient chatClient;
+
+    @GetMapping("/api/chatbot/client")
+    public String getChatClient(@RequestParam("id") String id,
+                          @RequestParam("message") String message) {
+
+        // 채팅 시작시 시스템 메시지 추가되며 윈도우 사이즈가 넘어가더라도 유지
+        // 문서에 따르면 SystemMessage가 추가되면 기존 SystemMessage들은 모두 삭제
+        if (chatMemory.get(id).isEmpty()) {
+            chatMemory.add(id, new SystemMessage("정확하고 명료하게 답변 해 주세요"));
+        }
+
+        // 사용자가 전달한 유저 메시지 추가
+        UserMessage userMessage = new UserMessage(message);
+        chatMemory.add(id, userMessage);
+
+        String answer = chatClient
+                .prompt()
+                    .system("정확하고 명료하게 답변 해 주세요")
+                    .messages(chatMemory.get(id))
+                .call()
+                    .content();
+
+        assert answer != null;
+        AssistantMessage assistantMessage = new AssistantMessage(answer);
+        chatMemory.add(id, assistantMessage);
+
+        return answer;
     }
 }
