@@ -19,7 +19,7 @@ public class OllamaApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.info("{}", chatModel.call("서울 올림픽은 몇회 올림픽이야? 한국어로 답변해 줘."));
-        log.info("{}", embeddingModel.embed("우리나라는 살기 좋은 나라이다."));
+//        log.info("{}", chatModel.call("서울 올림픽은 몇회 올림픽이야? 한국어로 답변해 줘."));
+//        log.info("{}", embeddingModel.embed("우리나라는 살기 좋은 나라이다."));
     }
 }

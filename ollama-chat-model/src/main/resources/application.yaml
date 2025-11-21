@@ -7,10 +7,11 @@ spring:
     ollama:
       chat:
         options:
-          model: gpt-oss:20b
+#          model: gpt-oss:20b
+          model: exaone3.5:7.8b
       embedding:
         options:
-          model: llama3
+          model: qwen3-embedding:8b
     vectorstore:
       mariadb:
         initialize-schema: true

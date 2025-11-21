@@ -2,17 +2,23 @@ package com.example.demo.tool;
 
 import com.example.demo.repository.ProductOrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ProductOrderTool {
     private final ProductOrderRepository productOrderRepository;
 
     @Tool(description = "상품 주문 목록을 알려줍니다")
     String getProductOrders() {
+        log.info("상품주문목록 도구 호출");
         String result = "주문 목록은 다음과 같아요\n";
         var productOrders = productOrderRepository.findAll();
         for (var productOrder : productOrders) {
@@ -27,6 +33,7 @@ public class ProductOrderTool {
 
     @Tool(description = "상품을 취소한다")
     String cancelProductOrder(@ToolParam(description = "주문번호") String orderNumber) {
+        log.info("상품취소 도구 호출");
         var productOrder = productOrderRepository.findByOrderNumber(orderNumber);
         if (productOrder.isPresent()) {
             if ("배송중".equals(productOrder.get().getShippingStatus())) {
@@ -39,4 +46,10 @@ public class ProductOrderTool {
             return "없는 주문 번호입니다.";
         }
     }
+
+    @Tool(description = "Get the current date and time in the user's timezone")
+    String getCurrentDateTime() {
+        return LocalDateTime.now().atZone(LocaleContextHolder.getTimeZone().toZoneId()).toString();
+    }
 }
+
