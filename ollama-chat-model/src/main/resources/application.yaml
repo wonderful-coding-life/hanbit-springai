@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: demo
+#  main:
+#    web-application-type: none
+  ai:
+    ollama:
+      chat:
+        options:
+          model: gpt-oss:20b
+      embedding:
+        options:
+          model: llama3
+    vectorstore:
+      mariadb:
+        initialize-schema: true
+  datasource:
+    url: jdbc:mariadb://localhost:3307/mydb
+    username: myuser
+    password: mypass
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
