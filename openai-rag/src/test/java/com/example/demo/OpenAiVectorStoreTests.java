@@ -12,7 +12,7 @@ import org.springframework.ai.reader.TextReader;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -25,7 +25,7 @@ public class OpenAiVectorStoreTests {
     private static final Logger log = LoggerFactory.getLogger(OpenAiVectorStoreTests.class);
 
     @Autowired
-    private PgVectorStore vectorStore;
+    private VectorStore vectorStore;
 
     @Autowired
     private OpenAiChatModel chatModel;
@@ -81,10 +81,6 @@ public class OpenAiVectorStoreTests {
             부적절한 경비 사용이 확인될 경우, 차기 급여에서 공제될 수 있습니다.
             """);
 
-    private String message1 = "배터리 수명은 얼마나 되나요?";
-    private String message2 = "사용자의 실수로 제품이 고장 났을 때 무상 수리가 가능한가요?";
-    private String message3 = "신입사원은 수습 기간이 얼마나 되나요?";
-
     @Test
     public void testVectorStoreWrite() {
         var documents = texts.stream().map(text -> new Document(text)).toList();
@@ -93,7 +89,11 @@ public class OpenAiVectorStoreTests {
 
     @Test
     public void testVectoreStoreSimilaritySearch() {
-        var question = "배터리 수명은 얼마나 되나요?";
+        var question1 = "무선청소기 배터리 수명은 얼마나 되나요?";
+        var question2 = "사용자의 실수로 제품이 고장 났을 때 무상 수리가 가능한가요?";
+        var question3 = "신입사원은 수습 기간이 얼마나 되나요?";
+
+        var question = question3;
         var documents = vectorStore.similaritySearch(question);
         log.info("size = {}", documents.size());
         var information = String.join("\n", documents.stream().map(Document::getText).toList());
@@ -104,7 +104,7 @@ public class OpenAiVectorStoreTests {
                 [질문]
                 {1}
                 """, information, question);
-        log.info("prompt = {}", prompt);
+        //log.info("prompt = {}", prompt);
         var answer = chatModel.call(prompt);
         log.info("{}", answer);
     }

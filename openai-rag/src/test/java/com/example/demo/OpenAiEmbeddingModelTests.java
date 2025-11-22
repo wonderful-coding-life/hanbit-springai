@@ -38,7 +38,7 @@ public class OpenAiEmbeddingModelTests {
             사내 교육 프로그램은 분기별로 운영되며, 필수 교육을 미이수할 경우 인사고과에 반영될 수 있습니다.
             퇴사 시에는 최소 30일 전에 인사팀에 서면으로 통보해야 합니다.
             """;
-    private String message1 = "배터리 수명은 얼마나 되나요?";
+    private String message1 = "무선청소기의 배터리 수명은 얼마나 되나요?";
     private String message2 = "사용자의 실수로 제품이 고장 났을 때 무상 수리가 가능한가요?";
     private String message3 = "신입사원은 수습 기간이 얼마나 되나요?";
 
