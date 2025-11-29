@@ -8,6 +8,7 @@ import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.chat.metadata.RateLimit;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionOptions;
+import org.springframework.ai.openai.api.OpenAiAudioApi;
 import org.springframework.ai.openai.metadata.audio.OpenAiAudioTranscriptionResponseMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +34,7 @@ public class OpenAiAudioTranscriptionModelTests {
     @Test
     public void testTranscriptModelOptions() {
         OpenAiAudioTranscriptionOptions openAiAudioTranscriptionOptions = OpenAiAudioTranscriptionOptions.builder()
-                .model("whisper-1") // whisper-1 (default), gpt-4o-transcribe, gpt-4o-mini-transcribe
+                .model("gpt-4o-mini-transcribe") // whisper-1 (default), gpt-4o-transcribe, gpt-4o-mini-transcribe
                 .language("ko") // ko, en, ja 등 90개 이상의 언어 (설정하지 않으면 auto detect)
                 // 현재 GranularityType은 동작하지 않음
                 //.granularityType(OpenAiAudioApi.TranscriptionRequest.GranularityType.SEGMENT)

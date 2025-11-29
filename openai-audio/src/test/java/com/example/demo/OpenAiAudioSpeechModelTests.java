@@ -1,14 +1,16 @@
 package com.example.demo;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.audio.tts.TextToSpeechPrompt;
+import org.springframework.ai.audio.tts.TextToSpeechResponse;
 import org.springframework.ai.chat.metadata.RateLimit;
 import org.springframework.ai.openai.OpenAiAudioSpeechModel;
 import org.springframework.ai.openai.OpenAiAudioSpeechOptions;
 import org.springframework.ai.openai.api.OpenAiAudioApi;
-import org.springframework.ai.openai.audio.speech.SpeechPrompt;
-import org.springframework.ai.openai.audio.speech.SpeechResponse;
+import org.springframework.ai.openai.metadata.audio.OpenAiAudioSpeechResponseMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -31,13 +33,6 @@ public class OpenAiAudioSpeechModelTests {
 
     @Test
     public void testSpeechModelOptions() throws IOException {
-        OpenAiAudioSpeechOptions speechOptions = OpenAiAudioSpeechOptions.builder()
-                .model("tts-1-hd") // tts-1, tts-1-hd, gpt-4o-mini-tts (not ready yet for spring ai)
-                .voice(OpenAiAudioApi.SpeechRequest.Voice.NOVA) // default ALLOY?
-                .responseFormat(OpenAiAudioApi.SpeechRequest.AudioResponseFormat.MP3)
-                .speed(1.0f) // fast > 1.0
-                .build();
-
         String text = """
                 안녕하세요, 고객님.
                 문의 사항이 있으시면 '삐' 소리 후에 음성으로 남겨 주세요.
@@ -50,12 +45,17 @@ public class OpenAiAudioSpeechModelTests {
                 Thank you!
                 """;
 
-        SpeechPrompt speechPrompt = new SpeechPrompt(text, speechOptions);
-        SpeechResponse response = speechModel.call(speechPrompt);
-        log.info("Metadata {}", response.getMetadata());
+        OpenAiAudioSpeechOptions speechOptions = OpenAiAudioSpeechOptions.builder()
+                .model("tts-1-hd") // tts-1, tts-1-hd, gpt-4o-mini-tts (not ready yet for spring ai)
+                .voice(OpenAiAudioApi.SpeechRequest.Voice.NOVA) // default ALLOY?
+                .responseFormat(OpenAiAudioApi.SpeechRequest.AudioResponseFormat.MP3)
+                .build();
 
-        RateLimit rateLimit = response.getMetadata().getRateLimit();
-        if (rateLimit != null) {
+        TextToSpeechPrompt prompt = new TextToSpeechPrompt(textEng, speechOptions);
+        TextToSpeechResponse response = speechModel.call(prompt);
+
+        if (response.getMetadata() instanceof OpenAiAudioSpeechResponseMetadata metadata) {
+            RateLimit rateLimit = metadata.getRateLimit();
             log.info("requestLimit = {}, requestRemaining = {}, requestReset = {}",
                     rateLimit.getRequestsLimit(),
                     rateLimit.getRequestsRemaining(),
