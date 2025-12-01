@@ -5,6 +5,7 @@ spring:
 #    web-application-type: none
   ai:
     ollama:
+#      base-url: http://localhost:11434
       chat:
         options:
 #          model: gpt-oss:20b
@@ -16,7 +17,7 @@ spring:
       mariadb:
         initialize-schema: true
   datasource:
-    url: jdbc:mariadb://localhost:3307/mydb
+    url: jdbc:mariadb://localhost:3306/mydb
     username: myuser
     password: mypass
   jpa:
