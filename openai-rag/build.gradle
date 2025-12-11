@@ -6,6 +6,7 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
 
 java {
 	toolchain {
@@ -24,7 +25,7 @@ repositories {
 }
 
 ext {
-	set('springAiVersion', "1.1.0")
+	set('springAiVersion', "1.1.2")
 }
 
 dependencies {
