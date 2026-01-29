@@ -83,7 +83,7 @@ public class OpenAiVectorStoreTests {
 
     @Test
     public void testVectorStoreWrite() {
-        var documents = texts.stream().map(text -> new Document(text)).toList();
+        var documents = texts.stream().map(Document::new).toList();
         vectorStore.write(documents);
     }
 
