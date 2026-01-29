@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/ollama-chat-model" />
+    <file type="web" url="file://$PROJECT_DIR$/openai-audio" />
+    <file type="web" url="file://$PROJECT_DIR$/openai-chat-model" />
+    <file type="web" url="file://$PROJECT_DIR$/openai-image" />
+    <file type="web" url="file://$PROJECT_DIR$/openai-moderation" />
+    <file type="web" url="file://$PROJECT_DIR$/openai-rag" />
+    <file type="web" url="file://$PROJECT_DIR$/openai-tool" />
+    <file type="web" url="file://$PROJECT_DIR$/openai-webflux" />
+  </component>
   <component name="ProjectRootManager">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
