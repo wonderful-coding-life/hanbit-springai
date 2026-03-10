@@ -80,14 +80,16 @@ public class OpenAiChatModelTests {
     //   → 0.0 ~ 1.0 (기본 1.0 - 모든 단어를 사용 범위에 포함)
     // 일반적으로 temperature와 top_p는 동시에 크게 조정하지 않고, 하나를 바꿀 때 다른 하나는 기본값(1.0)을 설정
     // GPT-5는 temperatur, topP 모두 디폴트 값 1.0, 1.0만 지원
+    // reasoningEffort : 추론(Reasoning) 모델이 문제 해결에 얼마나 많은 노력을 기울일지 조절 (Thinking, 토큰 소비)
     @Test
     public void testChatGptPrompt() {
         // String message = "비 오는 날의 기분을 시인처럼 표현해줘.";
         String message = "무지개의 색을 새로운 방식으로 설명해줘.";
         var chatOptions = OpenAiChatOptions.builder()
-                .model(OpenAiApi.ChatModel.GPT_4_O_MINI)
+                .model(OpenAiApi.ChatModel.GPT_5_MINI) // GPT_4_O : Intelligence, GPT_5 : Reasoning
                 .N(1)
                 .topP(1.0)
+                .reasoningEffort("low") // low, medium, high
                 .temperature(1.0).build();
 
         var prompt = new Prompt(message, chatOptions);
