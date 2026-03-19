@@ -81,6 +81,10 @@ public class OpenAiChatModelTests {
     // 일반적으로 temperature와 top_p는 동시에 크게 조정하지 않고, 하나를 바꿀 때 다른 하나는 기본값(1.0)을 설정
     // GPT-5는 temperatur, topP 모두 디폴트 값 1.0, 1.0만 지원
     // reasoningEffort : 추론(Reasoning) 모델이 문제 해결에 얼마나 많은 노력을 기울일지 조절 (Thinking, 토큰 소비)
+    // serviceTier : 처리 품질 옵션
+    //   default → 기본값, 일반적인 latency / 비용, 추가 비용 없음 (기본 토큰 과금만)
+    //   priority → 더 빠른 응답 (낮은 latency), 트래픽이 많을 때도 안정적 처리, 추가 비용 발생
+    //   flex → 더 저렴하지만 느림, 배치 / 비실시간 작업용, 일부 환경에서만 제공
     @Test
     public void testChatGptPrompt() {
         // String message = "비 오는 날의 기분을 시인처럼 표현해줘.";
@@ -89,6 +93,7 @@ public class OpenAiChatModelTests {
                 .model(OpenAiApi.ChatModel.GPT_5_MINI) // GPT_4_O : Intelligence, GPT_5 : Reasoning
                 .N(1)
                 .topP(1.0)
+                .serviceTier(OpenAiApi.ServiceTier.FLEX)
                 .reasoningEffort("low") // low, medium, high
                 .temperature(1.0).build();
 
