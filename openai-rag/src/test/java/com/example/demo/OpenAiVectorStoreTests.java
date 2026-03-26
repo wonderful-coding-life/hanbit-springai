@@ -117,10 +117,16 @@ public class OpenAiVectorStoreTests {
         // TextReader reader = new TextReader("https://example.com/data/sample.txt");
         // TextReader는 기본적으로 하나의 Document를 만들지만 이것을 List<Document>로 만드는 것은 RAG 구조를 염두에 두고 만들었기 때문
         // log.info("{}", reader.read().getFirst().getText());
+        //
+        // TokenTextSplitter splitter = TokenTextSplitter.builder().withChunkSize(800).build();
+        // 청크 사이트 디폴트 800
+        // - 200 ~ 400 → 검색 정확도 중요 (RAG)
+        // - 500 ~ 1000 → 문맥 유지 중요 (요약, QA)
+        // - 1000+ → 긴 문서 유지 (비추천 많음)
 
         List<Document> documents = reader.read();
         documents.forEach(document -> document.getMetadata().put("category", "소설"));
-        TokenTextSplitter splitter = new TokenTextSplitter();
+        TokenTextSplitter splitter = TokenTextSplitter.builder().build();
         vectorStore.write(splitter.split(documents));
     }
 
@@ -129,7 +135,7 @@ public class OpenAiVectorStoreTests {
         DocumentReader reader = new PagePdfDocumentReader("classpath:/인공지능_시대의_예술.pdf");
         List<Document> documents = reader.read();
         documents.forEach(document -> document.getMetadata().put("article", "ai")); // ai, avata
-        TokenTextSplitter splitter = new TokenTextSplitter();
+        TokenTextSplitter splitter = TokenTextSplitter.builder().build();
         vectorStore.write(splitter.split(documents));
     }
 
