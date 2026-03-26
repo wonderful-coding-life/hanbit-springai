@@ -1,0 +1,17 @@
+/* 심플하고 강의용에 적합한 스타일
+   - 템플릿은 학생에게 보이므로 HTML은 간결하게 유지
+   - 여기에 스타일을 두어 재사용 및 유지보수 용이
+*/
+:root{
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --accent: #0b63ff;
+  --text: #0b1420;
+}
+html,body{height:100%;margin:0;padding:0;font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;background:var(--bg);color:var(--text)}
+.container{max-width:900px;margin:40px auto;padding:20px;background:var(--card);border-radius:10px;box-shadow:0 6px 20px rgba(11,20,32,0.06)}
+.title{font-size:18px;margin:0 0 12px 0}
+.result{white-space:pre-wrap;font-size:15px;line-height:1.6;border:1px dashed rgba(11,20,32,0.06);padding:12px;border-radius:6px;background:transparent}
+.actions{margin-top:14px}
+.button{display:inline-block;padding:8px 12px;background:var(--accent);color:#fff;text-decoration:none;border-radius:6px}
+@media (max-width:480px){.container{margin:16px;padding:14px}.title{font-size:16px}.result{font-size:14px}}
