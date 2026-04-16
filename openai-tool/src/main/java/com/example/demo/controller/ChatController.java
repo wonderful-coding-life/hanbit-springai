@@ -9,8 +9,8 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.model.tool.ToolCallingChatOptions;
 import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.support.ToolCallbacks;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,9 +37,8 @@ public class ChatController {
                 new UserMessage(userMessage),
                 new SystemMessage(systemMessage)
         );
-        ToolCallback[] productOrderTools = ToolCallbacks.from(productOrderTool);
-        ChatOptions chatOptions = ToolCallingChatOptions.builder()
-                .toolCallbacks(productOrderTools)
+        ChatOptions chatOptions = OpenAiChatOptions.builder()
+                .toolCallbacks(ToolCallbacks.from(productOrderTool))
                 .build();
         Prompt prompt = new Prompt(messages, chatOptions);
         ChatResponse response = chatModel.call(prompt);
