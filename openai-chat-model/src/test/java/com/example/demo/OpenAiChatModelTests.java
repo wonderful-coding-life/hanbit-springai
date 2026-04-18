@@ -92,10 +92,12 @@ public class OpenAiChatModelTests {
         var chatOptions = OpenAiChatOptions.builder()
                 .model(OpenAiApi.ChatModel.GPT_5_MINI) // GPT_4_O : Intelligence, GPT_5 : Reasoning
                 .N(1)
+                .temperature(1.0)
                 .topP(1.0)
+                .maxCompletionTokens(2040)
                 .serviceTier(OpenAiApi.ServiceTier.FLEX)
                 .reasoningEffort("low") // low, medium, high
-                .temperature(1.0).build();
+                .build();
 
         var prompt = new Prompt(message, chatOptions);
         var chatResponse = chatModel.call(prompt);
