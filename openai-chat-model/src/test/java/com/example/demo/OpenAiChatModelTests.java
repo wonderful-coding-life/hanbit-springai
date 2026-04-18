@@ -97,6 +97,7 @@ public class OpenAiChatModelTests {
                 .maxCompletionTokens(2040)
                 .serviceTier(OpenAiApi.ServiceTier.FLEX)
                 .reasoningEffort("low") // low, medium, high
+                //.toolCallbacks(ToolCallback... toolCallbacks)
                 .build();
 
         var prompt = new Prompt(message, chatOptions);
