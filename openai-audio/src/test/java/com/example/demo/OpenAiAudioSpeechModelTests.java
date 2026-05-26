@@ -1,16 +1,12 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.audio.tts.TextToSpeechPrompt;
 import org.springframework.ai.audio.tts.TextToSpeechResponse;
-import org.springframework.ai.chat.metadata.RateLimit;
 import org.springframework.ai.openai.OpenAiAudioSpeechModel;
 import org.springframework.ai.openai.OpenAiAudioSpeechOptions;
-import org.springframework.ai.openai.api.OpenAiAudioApi;
-import org.springframework.ai.openai.metadata.audio.OpenAiAudioSpeechResponseMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -47,25 +43,12 @@ public class OpenAiAudioSpeechModelTests {
 
         OpenAiAudioSpeechOptions speechOptions = OpenAiAudioSpeechOptions.builder()
                 .model("tts-1-hd") // tts-1, tts-1-hd, gpt-4o-mini-tts (not ready yet for spring ai)
-                .voice(OpenAiAudioApi.SpeechRequest.Voice.NOVA) // default ALLOY?
-                .responseFormat(OpenAiAudioApi.SpeechRequest.AudioResponseFormat.MP3)
+                .voice(OpenAiAudioSpeechOptions.Voice.NOVA) // default ALLOY?
+                .responseFormat(OpenAiAudioSpeechOptions.AudioResponseFormat.MP3)
                 .build();
 
         TextToSpeechPrompt prompt = new TextToSpeechPrompt(textEng, speechOptions);
         TextToSpeechResponse response = speechModel.call(prompt);
-
-        if (response.getMetadata() instanceof OpenAiAudioSpeechResponseMetadata metadata) {
-            RateLimit rateLimit = metadata.getRateLimit();
-            log.info("requestLimit = {}, requestRemaining = {}, requestReset = {}",
-                    rateLimit.getRequestsLimit(),
-                    rateLimit.getRequestsRemaining(),
-                    rateLimit.getRequestsReset());
-            // 텍스트 토큰을 사용하지 않고 오디오 길이(초) 기준으로 과금되기 때문에 토큰 제한은 null이 반환
-            log.info("tokensLimit = {}, tokensRemaining = {}, tokensReset = {}",
-                    rateLimit.getTokensLimit(),
-                    rateLimit.getTokensRemaining(),
-                    rateLimit.getTokensReset());
-        }
 
         byte[] bin = response.getResult().getOutput();
         Files.write(Paths.get("D:\\archive\\audio\\ai_tts_options.mp3"), bin);
